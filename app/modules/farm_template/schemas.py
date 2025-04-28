@@ -3,7 +3,7 @@ from typing import Optional
 
 class FarmTemplateBase(BaseModel):
     name: str = Field(..., min_length=3, max_length=100)
-    image_url: HttpUrl = Field(..., description="Valid URL to farm image")
+    image_url: str = Field(..., description="Valid URL to farm image")
     base_price: float = Field(..., gt=0)
     price_multiplier: float = Field(..., gt=1.0)
     base_income: float = Field(..., gt=0)
@@ -14,7 +14,7 @@ class FarmTemplateCreate(FarmTemplateBase):
 
 class FarmTemplateUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=3, max_length=100)
-    image_url: Optional[HttpUrl] = None
+    image_url: Optional[str] = None
     base_price: Optional[float] = Field(None, gt=0)
     price_multiplier: Optional[float] = Field(None, gt=1.0)
     base_income: Optional[float] = Field(None, gt=0)
