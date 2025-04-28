@@ -1,0 +1,36 @@
+import os
+from dotenv import load_dotenv
+from typing import Optional
+
+load_dotenv()
+
+class Settings:
+    def __init__(self):
+        self.__bot_token: Optional[str] = None
+        self.__db_url: Optional[str] = None
+        self.__load_environment()
+
+    def __load_environment(self):
+        self.__bot_token = os.getenv("BOT_TOKEN")
+        self.__db_url = os.getenv("DB_URL")
+
+    @property
+    def bot_token(self) -> str:
+        if self.__bot_token is None:
+            raise ValueError("BOT_TOKEN is not set in environment variables")
+        return self.__bot_token
+
+    @property
+    def db_url(self) -> str:
+        if self.__db_url is None:
+            raise ValueError("DB_URL is not set in environment variables")
+        return self.__db_url  
+    @property
+    def admin_secret_key(self) -> str:
+        key = os.getenv("ADMIN_SECRET_KEY")
+        if not key:
+            raise ValueError("ADMIN_SECRET_KEY not set")
+        return key
+
+
+settings = Settings()

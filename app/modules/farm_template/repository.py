@@ -1,0 +1,52 @@
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, update, delete
+from app.models.farm_template import FarmTemplate
+
+class FarmTemplateRepository:
+    def __init__(self, db: AsyncSession):
+        self.db = db
+
+    async def create(self, data: dict) -> FarmTemplate:
+        new_template = FarmTemplate(**data)
+        self.db.add(new_template)
+        await self.db.commit()
+        await self.db.refresh(new_template)
+        return new_template
+
+    async def get_all(self) -> list[FarmTemplate]:
+        result = await self.db.execute(select(FarmTemplate))
+        return result.scalars().all()
+
+    async def get_by_id(self, farm_id: int) -> FarmTemplate | None:
+        result = await self.db.execute(
+            select(FarmTemplate).where(FarmTemplate.farm_id == farm_id)
+        )
+        return result.scalars().first()
+
+    async def update(self, farm_id: int, data: dict) -> FarmTemplate | None:
+        stmt = (
+            update(FarmTemplate)
+            .where(FarmTemplate.farm_id == farm_id)
+            .values(**data)
+            .returning(FarmTemplate)
+        )
+        result = await self.db.execute(stmt)
+        await self.db.commit()
+        return result.scalars().first()
+
+    async def delete(self, farm_id: int) -> bool:
+        stmt = delete(FarmTemplate).where(FarmTemplate.farm_id == farm_id)
+        result = await self.db.execute(stmt)
+        await self.db.commit()
+        return result.rowcount > 0
+
+    async def toggle_visibility(self, farm_id: int) -> FarmTemplate | None:
+        stmt = (
+            update(FarmTemplate)
+            .where(FarmTemplate.farm_id == farm_id)
+            .values(is_visible=~FarmTemplate.is_visible)
+            .returning(FarmTemplate)
+        )
+        result = await self.db.execute(stmt)
+        await self.db.commit()
+        return result.scalars().first()
