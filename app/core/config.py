@@ -11,8 +11,8 @@ class Settings:
         self.__load_environment()
 
     def __load_environment(self):
-        self.__bot_token = os.getenv("BOT_TOKEN")
-        self.__db_url = os.getenv("DB_URL")
+        self.__bot_token = os.environ.get("BOT_TOKEN")
+        self.__db_url = os.environ.get("DB_URL")
 
     @property
     def bot_token(self) -> str:
@@ -27,7 +27,7 @@ class Settings:
         return self.__db_url  
     @property
     def admin_secret_key(self) -> str:
-        key = os.getenv("ADMIN_SECRET_KEY")
+        key = os.environ.get("ADMIN_SECRET_KEY")
         if not key:
             raise ValueError("ADMIN_SECRET_KEY not set")
         return key
