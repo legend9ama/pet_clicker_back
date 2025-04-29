@@ -3,11 +3,9 @@ from typing import Optional
 import json
 from urllib.parse import parse_qs
 
-class TelegramInitData(BaseModel):
-    init_data: str = Field(..., description="Telegram InitData")
-
-class UserCreateRequest(TelegramInitData):
-    referrer_id: Optional[int] = Field(None, gt=0)
+class TelegramUserData(BaseModel):
+    id: int
+    username: Optional[str] = None
 
 class UserCreate(BaseModel):
     telegram_id: int
@@ -17,7 +15,7 @@ class UserCreate(BaseModel):
 class UserUpdate(BaseModel):
     username: Optional[str] = Field(None, min_length=3, max_length=32)
 
-class UserResponse(BaseModel):
+class UserResponse(UserCreate):
     telegram_id: int
     username: str
     created_at: int

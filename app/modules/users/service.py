@@ -2,12 +2,11 @@ from fastapi import HTTPException, status
 from app.models.user import User
 from app.modules.users.repository import UserRepository
 from app.modules.users.schemas import (
-    UserCreateRequest,
     UserCreate,
     UserResponse,
     UserUpdate
 )
-from app.core.telegram_validation import validate_telegram_data
+from app.core.telegram_validation import validate_telegram_data, parse_telegram_data
 from app.core.config import settings
 
 class UserService:
@@ -22,41 +21,20 @@ class UserService:
             )
         return UserResponse.parse_init_data(init_data)
 
-    async def create_user(self, data: UserCreateRequest) -> UserResponse:
-        telegram_data = await self._validate_telegram_data(data.init_data)
-        existing_user = await self.repo.get_by_id(telegram_data['telegram_id'])
-        
+    async def get_or_create_user(self, init_data: str) -> UserResponse:
+        user_data = await parse_telegram_data(init_data)
+        existing_user = await self.repo.get_by_id(user_data.id)
         if existing_user:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="User already exists"
-            )
+            return existing_user
 
-        if data.referrer_id:
-            referrer = await self.repo.get_by_id(data.referrer_id)
-            if not referrer:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Referrer not found"
-                )
-
-        user = await self.repo.create(UserCreate(
-            **telegram_data,
-            referrer_id=data.referrer_id
-        ))
-        return await self._format_response(user)
-
-    async def get_user(self, telegram_id: int) -> UserResponse:
-        user = await self.repo.get_by_id(telegram_id)
-        if not user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="User not found"
-            )
-        return await self._format_response(user)
+        new_user = UserCreate(
+            telegram_id=user_data.id,
+            username=user_data.username
+        )
+        return await self.repo.create(new_user)
 
     async def update_user(self, telegram_id: int, data: UserUpdate) -> UserResponse:
-        user = await self.repo.update(telegram_id, data.dict(exclude_unset=True))
+        user = await self.repo.update(telegram_id, data.model_dump(exclude_unset=True))
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,

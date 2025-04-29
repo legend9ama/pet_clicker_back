@@ -24,6 +24,15 @@ class UserRepository:
         )
         return result.scalars().first()
 
+    async def get_or_create(self, user_data: dict) -> User:
+        user = await self.get_by_id(user_data.telegram_id)
+        if user:
+            return user
+        new_user = User(**user_data)
+        self.db.add(new_user)
+        await self.db.commit()
+        return new_user
+
     async def update(self, telegram_id: int, data: dict) -> User | None:
         stmt = (
             update(User)

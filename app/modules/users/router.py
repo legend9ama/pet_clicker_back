@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.modules.users.schemas import (
-    UserCreateRequest,
     UserResponse,
     UserUpdate
 )
@@ -10,15 +9,6 @@ from app.modules.users.repository import UserRepository
 from app.core.database import get_db
 
 router = APIRouter(prefix="/users", tags=["users"])
-
-@router.post("", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-async def create_user(
-    request: UserCreateRequest,
-    db: AsyncSession = Depends(get_db)
-):
-    repo = UserRepository(db)
-    service = UserService(repo)
-    return await service.create_user(request)
 
 @router.get("/me", response_model=UserResponse)
 async def get_current_user(
@@ -37,7 +27,7 @@ async def get_user(
 ):
     repo = UserRepository(db)
     service = UserService(repo)
-    return await service.get_user(telegram_id)
+    return await service.get_or_create_user(telegram_id)
 
 @router.patch("/{telegram_id}", response_model=UserResponse)
 async def update_user(

@@ -1,6 +1,11 @@
 import hmac
 import hashlib
 from urllib.parse import parse_qsl
+from app.modules.users.schemas import TelegramUserData
+from app.core.config import settings
+from fastapi import HTTPException
+from urllib.parse import parse_qs
+import json
 
 async def validate_telegram_data(data: str, bot_token: str) -> bool:
     """
@@ -31,3 +36,14 @@ async def validate_telegram_data(data: str, bot_token: str) -> bool:
     
     except Exception as e:
         return False
+    
+async def parse_telegram_data(init_data: str) -> TelegramUserData:
+    if not await validate_telegram_data(init_data, settings.bot_token):
+        raise HTTPException(status_code=401, detail="Invalid Telegram auth")
+    parsed = parse_qs(init_data)
+    user_data = json.loads(parsed.get('user', ['{}'])[0])
+    
+    return TelegramUserData(
+        id=user_data.get('id'),
+        username=user_data.get('username')
+    )
