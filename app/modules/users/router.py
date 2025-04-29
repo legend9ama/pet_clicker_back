@@ -7,6 +7,7 @@ from app.modules.users.schemas import (
 from app.modules.users.service import UserService
 from app.modules.users.repository import UserRepository
 from app.core.database import get_db
+from app.core.telegram_validation import parse_telegram_data
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -17,7 +18,7 @@ async def get_current_user(
 ):
     repo = UserRepository(db)
     service = UserService(repo)
-    telegram_data = await service._validate_telegram_data(init_data)
+    telegram_data = await parse_telegram_data(init_data)
     return await service.get_user(telegram_data['telegram_id'])
 
 @router.get("/{telegram_id}", response_model=UserResponse)
