@@ -41,9 +41,9 @@ async def parse_telegram_data(init_data: str) -> TelegramUserData:
     if not await validate_telegram_data(init_data, settings.bot_token):
         raise HTTPException(status_code=401, detail="Invalid Telegram auth")
     parsed = parse_qs(init_data)
-    user_data = json.loads(parsed.get('user', ['{}'])[0])
+    user_data = json.loads(parsed['user'][0])
     
     return TelegramUserData(
-        id=user_data.get('id'),
+        id=int(user_data.get('id')),
         username=user_data.get('username')
     )

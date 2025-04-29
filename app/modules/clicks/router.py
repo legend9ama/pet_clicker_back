@@ -12,12 +12,16 @@ from app.core.telegram_validation import validate_telegram_data, parse_telegram_
 from app.core.config import settings
 from urllib.parse import parse_qs
 import json
+from typing import Annotated
+
 
 router = APIRouter(prefix="/clicks", tags=["clicks"])
 
-async def get_authenticated_user(init_data: str) -> int:    
-    user_data = parse_telegram_data(init_data)
-    return int(user_data.id)
+async def get_authenticated_user(
+    telegram_init_data: Annotated[str, Header(alias="Telegram-Init-Data")]
+) -> int:    
+    user_data = await parse_telegram_data(telegram_init_data)
+    return user_data.id
 
 @router.post("/increment", response_model=ClickResponse)
 async def increment_clicks(
@@ -43,10 +47,9 @@ async def decrement_clicks(
 
 @router.get("/", response_model=ClickResponse)
 async def get_clicks(
-    init_data: str = Header(..., alias="Telegram-Init-Data"),
+    user_id: int = Depends(get_authenticated_user),
     db: AsyncSession = Depends(get_db)
 ):
-    user_id = await get_authenticated_user(init_data)
     repo = ClickRepository(db)
     service = ClickService(repo)
     return await service.get_current_clicks(user_id)
