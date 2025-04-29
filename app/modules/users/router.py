@@ -13,13 +13,12 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 @router.get("/me", response_model=UserResponse)
 async def get_current_user(
-    init_data: str = Header(..., alias="Telegram-Init-Data"),
+    telegram_init_data: str = Header(..., alias="Telegram-Init-Data"),
     db: AsyncSession = Depends(get_db)
 ):
     repo = UserRepository(db)
     service = UserService(repo)
-    telegram_data = await parse_telegram_data(init_data)
-    return await service.get_or_create_user(telegram_data['telegram_id'])
+    return await service.get_or_create_user(telegram_init_data)
 
 @router.get("/{telegram_id}", response_model=UserResponse)
 async def get_user(
