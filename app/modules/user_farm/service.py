@@ -31,10 +31,10 @@ class UserFarmService:
 
     async def upgrade_farm(self, telegram_id: int, farm_id: int, data: UserFarmUpgrade) -> UserFarmResponse:
         farm = await self.user_farm_repo.get_farm(telegram_id, farm_id)
-        total_cost = sum(
+        total_cost = int(sum(
             farm.current_upgrade_cost * (farm.farm_template.price_multiplier ** i)
             for i in range(data.levels)
-        )
+        ))
         
         if not await self.click_repo.has_enough_clicks(telegram_id, total_cost):
             raise HTTPException(status_code=400, detail="Not enough clicks")

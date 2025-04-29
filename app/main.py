@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from app.core.database import engine, Base
 
 from app.modules.users.router import router as users_router
@@ -29,8 +30,12 @@ app = FastAPI(
 
 # CORS
 app.add_middleware(
+    HTTPSRedirectMiddleware,
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://1384-78-62-84-199.ngrok-free.app",
+        "https://web.telegram.org"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
