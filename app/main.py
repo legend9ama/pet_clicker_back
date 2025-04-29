@@ -32,10 +32,7 @@ app = FastAPI(
 app.add_middleware(
     HTTPSRedirectMiddleware,
     CORSMiddleware,
-    allow_origins=[
-        "https://1384-78-62-84-199.ngrok-free.app",
-        "https://web.telegram.org"
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
