@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Header
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.modules.clicks.service import ClickService
 from app.modules.clicks.repository import ClickRepository
@@ -31,7 +31,7 @@ async def get_authenticated_user(init_data: str) -> int:
 @router.post("/increment", response_model=ClickResponse)
 async def increment_clicks(
     request: ClickIncrementRequest,
-    init_data: str,
+    init_data: str = Header(..., alias="Telegram-Init-Data"),
     db: AsyncSession = Depends(get_db)
 ):
     user_id = await get_authenticated_user(init_data)
@@ -42,7 +42,7 @@ async def increment_clicks(
 @router.post("/decrement", response_model=ClickResponse)
 async def decrement_clicks(
     request: ClickDecrementRequest,
-    init_data: str,
+    init_data: str = Header(..., alias="Telegram-Init-Data"),
     db: AsyncSession = Depends(get_db)
 ):
     user_id = await get_authenticated_user(init_data)
@@ -52,7 +52,7 @@ async def decrement_clicks(
 
 @router.get("/", response_model=ClickResponse)
 async def get_clicks(
-    init_data: str,
+    init_data: str = Header(..., alias="Telegram-Init-Data"),
     db: AsyncSession = Depends(get_db)
 ):
     user_id = await get_authenticated_user(init_data)

@@ -38,7 +38,6 @@ async def get_all_farm_templates(
 
 @router.get("/visible", response_model=list[FarmTemplateResponse])
 async def get_all_visible_farm_templates(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
     db: AsyncSession = Depends(get_db)
 ):
     repo = FarmTemplateRepository(db)

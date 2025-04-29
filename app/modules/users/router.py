@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Header
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.modules.users.schemas import (
     UserResponse,
@@ -12,7 +12,7 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 @router.get("/me", response_model=UserResponse)
 async def get_current_user(
-    init_data: str,
+    init_data: str = Header(..., alias="Telegram-Init-Data"),
     db: AsyncSession = Depends(get_db)
 ):
     repo = UserRepository(db)
