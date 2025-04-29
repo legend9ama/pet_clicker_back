@@ -24,6 +24,10 @@ class FarmTemplateService:
         templates = await self.repo.get_all()
         return [FarmTemplateResponse.model_validate(t) for t in templates]
 
+    async def get_all_visible_templates(self) -> list[FarmTemplateResponse]:
+        templates = await self.repo.get_all()
+        return [FarmTemplateResponse.model_validate(t) for t in templates]
+    
     async def get_template(self, farm_id: int) -> FarmTemplateResponse:
         template = await self.repo.get_by_id(farm_id)
         if not template:
@@ -34,7 +38,7 @@ class FarmTemplateService:
         return FarmTemplateResponse.model_validate(template)
 
     async def update_template(self, farm_id: int, data: FarmTemplateUpdate) -> FarmTemplateResponse:
-        template = await self.repo.update(farm_id, data.dict(exclude_unset=True))
+        template = await self.repo.update(farm_id, data.model_dump(exclude_unset=True))
         if not template:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,

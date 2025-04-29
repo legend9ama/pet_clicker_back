@@ -33,5 +33,5 @@ class UserResponse(BaseModel):
         user_data = json.loads(parsed.get('user', ['{}'])[0])
         return {
             'telegram_id': user_data.get('id'),
-            'username': user_data.get('username')
+            'username': user_data.get('first_name')
         }

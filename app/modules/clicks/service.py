@@ -23,7 +23,7 @@ class ClickService:
                 telegram_id, 
                 data.amount
             )
-            return ClickResponse.from_orm(clicks)
+            return ClickResponse.model_validate(clicks)
         except ValueError as e:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,

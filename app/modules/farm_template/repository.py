@@ -16,6 +16,10 @@ class FarmTemplateRepository:
     async def get_all(self) -> list[FarmTemplate]:
         result = await self.db.execute(select(FarmTemplate))
         return result.scalars().all()
+    
+    async def get_all_visible(self) -> list[FarmTemplate]:
+        result = await self.db.execute(select(FarmTemplate).where(FarmTemplate.is_visible == True))
+        return result.scalars().all()
 
     async def get_by_id(self, farm_id: int) -> FarmTemplate | None:
         result = await self.db.execute(
