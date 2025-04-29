@@ -3,6 +3,8 @@ from app.modules.user_farm.repository import UserFarmRepository
 from app.modules.farm_template.repository import FarmTemplateRepository
 from app.modules.clicks.repository import ClickRepository
 from app.modules.user_farm.schemas import *
+from datetime import datetime
+import time
 
 class UserFarmService:
     def __init__(self, 
@@ -45,3 +47,12 @@ class UserFarmService:
             return UserFarmResponse.model_validate(updated_farm)
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
+        
+    async def collect_farm(self, telegram_id: int, farm_id: int) -> UserFarmCollectionResponse:
+        farm = await self.user_farm_repo.get_farm(telegram_id, farm_id)
+        collected = int(farm.current_income / 3600 * (time.mktime(datetime.timetuple(datetime.now())) - farm.last_collected))
+        await self.click_repo.increment_clicks(collected)
+        await self.user_farm_repo.update_last_collected()
+        
+        return UserFarmCollectionResponse.model_validate(collected)
+        

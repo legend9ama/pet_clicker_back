@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, and_, update, delete
+from sqlalchemy import select, and_, update, delete, func
 from app.models.user_farm import UserFarm
 
 class UserFarmRepository:
@@ -32,6 +32,16 @@ class UserFarmRepository:
         await self.db.refresh(farm)
         return farm
 
+    async def update_last_collected(self, telegram_id: int, farm_id: int) -> UserFarm:
+        farm = await self.db.get(UserFarm, (telegram_id, farm_id))
+        if not farm:
+            raise ValueError("Farm not found")
+        
+        farm.last_collected = func.extract('epoch', func.now())
+        await self.db.commit()
+        await self.db.refresh(farm)
+        return farm
+    
     async def delete_farm(self, telegram_id: int, farm_id: int) -> bool:
         result = await self.db.execute(
             delete(UserFarm).where(and_(

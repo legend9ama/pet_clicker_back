@@ -23,5 +23,4 @@ class UserFarmResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 class UserFarmCollectionResponse(BaseModel):
-    collected: float
-    new_balance: float
+    collected: int
