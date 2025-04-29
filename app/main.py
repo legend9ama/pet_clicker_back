@@ -27,10 +27,9 @@ app = FastAPI(
     docs_url="/api/docs",
     redoc_url="/api/redoc"
 )
-
+app.add_middleware(HTTPSRedirectMiddleware)
 # CORS
 app.add_middleware(
-    HTTPSRedirectMiddleware,
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
