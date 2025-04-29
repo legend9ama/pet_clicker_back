@@ -6,20 +6,12 @@ from app.modules.users.schemas import (
     UserResponse,
     UserUpdate
 )
-from app.core.telegram_validation import validate_telegram_data, parse_telegram_data
+from app.core.telegram_validation import parse_telegram_data
 from app.core.config import settings
 
 class UserService:
     def __init__(self, repo: UserRepository):
         self.repo = repo
-
-    async def _validate_telegram_data(self, init_data: str) -> dict:
-        if not await validate_telegram_data(init_data, settings.bot_token()):
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid Telegram authorization"
-            )
-        return UserResponse.parse_init_data(init_data)
 
     async def get_or_create_user(self, init_data: str) -> UserResponse:
         user_data = await parse_telegram_data(init_data)
