@@ -16,7 +16,6 @@ class UserFarmRepository:
         existing = await self.db.get(UserFarm, (telegram_id, farm_id))
         if existing:
             raise ValueError("Farm already owned")
-        
         new_farm = UserFarm(telegram_id=telegram_id, farm_id=farm_id)
         self.db.add(new_farm)
         await self.db.commit()

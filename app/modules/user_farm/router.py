@@ -19,7 +19,7 @@ async def get_authenticated_user(
 
 @router.get("/", response_model=list[UserFarmResponse])
 async def get_farms(
-    telegram_id: int = Depends(validate_telegram_data),
+    telegram_id: int = Depends(get_authenticated_user),
     db: AsyncSession = Depends(get_db)
 ):
     user_farm_repo = UserFarmRepository(db)
@@ -41,7 +41,7 @@ async def purchase_farm(
     return await service.purchase_farm(telegram_id, data)
 
 @router.post("/{farmId}/collect", response_model=UserFarmCollectionResponse)
-async def purchase_farm(
+async def collect_farm(
     farm_id: int,
     telegram_id: int = Depends(get_authenticated_user),
     db: AsyncSession = Depends(get_db)

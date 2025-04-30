@@ -23,10 +23,11 @@ class UserFarmService:
         template = await self.farm_template_repo.get_by_id(data.farm_id)
         if not template or not template.is_visible:
             raise HTTPException(status_code=400, detail="Farm not available")
-        
+        if not await self.click_repo.has_enough_clicks(telegram_id, template.base_price):
+            raise HTTPException(status_code=400, detail="Not enough clicks")
         try:
-            await self.click_repo.decrement_clicks(telegram_id, template.base_price)
             farm = await self.user_farm_repo.create_farm(telegram_id, data.farm_id)
+            await self.click_repo.decrement_clicks(telegram_id, template.base_price)
             return UserFarmResponse.model_validate(farm)
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
