@@ -28,7 +28,7 @@ class UserFarmService:
             )
         for farm in farms]
 
-    async def purchase_farm(self, telegram_id: int, data: UserFarmPurchase) -> UserFarmResponse:
+    async def purchase_farm(self, telegram_id: int, data: UserFarmPurchase) -> UserFarmPurchaseResponse:
         template = await self.farm_template_repo.get_by_id(data.farm_id)
         if not template or not template.is_visible:
             raise HTTPException(status_code=400, detail="Farm not available")
@@ -37,9 +37,8 @@ class UserFarmService:
         try:
             farm = await self.user_farm_repo.create_farm(telegram_id, data.farm_id)
             await self.click_repo.decrement_clicks(telegram_id, template.base_price)
-            return UserFarmResponse.model_validate({
+            return UserFarmPurchaseResponse.model_validate({
                     **farm.__dict__,
-                    "last_collected": time,
                     "name": farm.farm_template.name,
                     "image_url": farm.farm_template.image_url
                 })

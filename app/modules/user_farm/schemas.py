@@ -11,6 +11,16 @@ class UserFarmPurchase(BaseModel):
 class UserFarmUpgrade(BaseModel):
     levels: int = Field(1, gt=0, le=10, description="Number of levels to upgrade (1-10)")
 
+class UserFarmPurchaseResponse(BaseModel):
+    farm_id: int
+    level: int
+    current_income: int
+    current_upgrade_cost: int
+    name: str
+    image_url: str
+    
+    model_config = ConfigDict(from_attributes=True)
+    
 class UserFarmResponse(BaseModel):
     farm_id: int
     level: int
