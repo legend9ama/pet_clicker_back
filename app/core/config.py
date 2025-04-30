@@ -11,7 +11,7 @@ class Settings:
         self.__bot_token: Optional[str] = None
         self.__db_url: Optional[str] = None
         self.__load_environment()
-        self.__unixtimestamp=None
+        self.__unixtimestamp: Optional[int] = None
 
     def __load_environment(self):
         self.__bot_token = os.environ.get("BOT_TOKEN")
