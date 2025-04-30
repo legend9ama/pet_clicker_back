@@ -36,7 +36,6 @@ async def purchase_farm(
 @router.post("/{farmId}/collect", response_model=UserFarmCollectionResponse)
 async def purchase_farm(
     farm_id: int,
-    data: UserFarmCollectionResponse,
     telegram_id: int = Depends(validate_telegram_data),
     db: AsyncSession = Depends(get_db)
 ):

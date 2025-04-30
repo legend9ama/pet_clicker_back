@@ -52,7 +52,7 @@ class UserFarmService:
         farm = await self.user_farm_repo.get_farm(telegram_id, farm_id)
         collected = int(farm.current_income / 3600 * (time.mktime(datetime.timetuple(datetime.now())) - farm.last_collected))
         await self.click_repo.increment_clicks(collected)
-        await self.user_farm_repo.update_last_collected()
+        await self.user_farm_repo.update_last_collected(telegram_id, farm_id)
         
         return UserFarmCollectionResponse.model_validate(collected)
         
