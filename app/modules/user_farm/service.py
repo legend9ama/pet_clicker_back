@@ -35,7 +35,11 @@ class UserFarmService:
         try:
             farm = await self.user_farm_repo.create_farm(telegram_id, data.farm_id)
             await self.click_repo.decrement_clicks(telegram_id, template.base_price)
-            return UserFarmResponse.model_validate(farm)
+            return UserFarmResponse.model_validate({
+                    **farm.__dict__,
+                    "name": farm.farm_template.name,
+                    "image_url": farm.farm_template.image_url
+                })
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
 
