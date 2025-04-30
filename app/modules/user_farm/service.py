@@ -54,7 +54,6 @@ class UserFarmService:
         
         if not await self.click_repo.has_enough_clicks(telegram_id, total_cost):
             raise HTTPException(status_code=400, detail="Not enough clicks")
-        
         try:
             await self.click_repo.decrement_clicks(telegram_id, total_cost)
             updated_farm = await self.user_farm_repo.upgrade_farm(telegram_id, farm_id, data.levels)
