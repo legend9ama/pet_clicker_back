@@ -28,7 +28,7 @@ async def get_farms(
     service = UserFarmService(user_farm_repo, farm_template_repo, click_repo)
     return await service.get_farms(telegram_id)
 
-@router.post("/purchase", response_model=UserFarmResponse)
+@router.post("/purchase", response_model=UserFarmPurchase)
 async def purchase_farm(
     data: UserFarmPurchase,
     telegram_id: int = Depends(get_authenticated_user),
