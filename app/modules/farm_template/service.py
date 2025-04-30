@@ -25,7 +25,7 @@ class FarmTemplateService:
         return [FarmTemplateResponse.model_validate(t) for t in templates]
 
     async def get_all_visible_templates(self) -> list[FarmTemplateResponse]:
-        templates = await self.repo.get_all()
+        templates = await self.repo.get_all_visible()
         return [FarmTemplateResponse.model_validate(t) for t in templates]
     
     async def get_template(self, farm_id: int) -> FarmTemplateResponse:
