@@ -13,7 +13,7 @@ class UserFarm(Base):
     current_upgrade_cost = Column(Integer)
     
     user = relationship("User", back_populates="farms")
-    farm_template = relationship("FarmTemplate", back_populates="user_farms")
+    farm_template = relationship("FarmTemplate", back_populates="user_farms", lazy="joined")
 
 @event.listens_for(UserFarm, 'before_insert')
 @event.listens_for(UserFarm, 'before_update')
