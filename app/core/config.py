@@ -21,7 +21,7 @@ class Settings:
     def unixtimestamp(self) -> int:
         self.__unixtimestamp = int(time.mktime(datetime.timetuple(datetime.now())))
         if self.__unixtimestamp is None:
-            raise ValueError("__unixtimestamp is not set")
+            raise ValueError("unixtimestamp is not set")
         return self.__unixtimestamp
     
     @property
