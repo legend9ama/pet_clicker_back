@@ -1,6 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_, update, delete, func
 from app.models.user_farm import UserFarm
+from sqlalchemy.orm import selectinload
 
 class UserFarmRepository:
     def __init__(self, db: AsyncSession):
@@ -8,7 +9,7 @@ class UserFarmRepository:
 
     async def get_user_farms(self, telegram_id: int) -> list[UserFarm]:
         result = await self.db.execute(
-            select(UserFarm).where(UserFarm.telegram_id == telegram_id)
+            select(UserFarm).options(selectinload(UserFarm.farm_template)).where(UserFarm.telegram_id == telegram_id)
         )
         return result.scalars().all()
 
