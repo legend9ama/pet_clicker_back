@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Header
+from fastapi import APIRouter, Depends, HTTPException, Header, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.modules.user_farm.service import UserFarmService
 from app.modules.user_farm.repository import UserFarmRepository
@@ -30,8 +30,8 @@ async def get_farms(
 
 @router.post("/purchase", response_model=UserFarmPurchase)
 async def purchase_farm(
-    data: UserFarmPurchase,
     telegram_id: int = Depends(get_authenticated_user),
+    data: UserFarmPurchase = Body(...),
     db: AsyncSession = Depends(get_db)
 ):
     user_farm_repo = UserFarmRepository(db)
