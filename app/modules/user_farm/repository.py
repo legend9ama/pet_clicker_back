@@ -14,6 +14,14 @@ class UserFarmRepository:
         )
         return result.unique().scalars().all()
 
+    async def get_farm(self, telegram_id: int, farm_id: int) -> list[UserFarm]:
+        result = await self.db.execute(select(UserFarm).where(and_(
+            UserFarm.telegram_id == telegram_id,
+            UserFarm.farm_id == farm_id
+            ))
+        )
+        return result.unique().scalars().all()
+    
     async def create_farm(self, telegram_id: int, farm_id: int) -> UserFarm:
         existing = await self.db.get(UserFarm, (telegram_id, farm_id))
         template = await self.db.get(FarmTemplate, farm_id)
