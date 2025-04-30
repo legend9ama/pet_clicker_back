@@ -16,10 +16,10 @@ class Settings:
     def __load_environment(self):
         self.__bot_token = os.environ.get("BOT_TOKEN")
         self.__db_url = os.environ.get("DB_URL")
-        self.__unixtimestamp = int(time.mktime(datetime.timetuple(datetime.now())))
 
     @property
     def unixtimestamp(self) -> int:
+        self.__unixtimestamp = int(time.mktime(datetime.timetuple(datetime.now())))
         if self.__unixtimestamp is None:
             raise ValueError("__unixtimestamp is not set")
         return self.__unixtimestamp
