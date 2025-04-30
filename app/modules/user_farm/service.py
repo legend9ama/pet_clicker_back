@@ -5,6 +5,7 @@ from app.modules.clicks.repository import ClickRepository
 from app.modules.user_farm.schemas import *
 from datetime import datetime
 import time
+from app.core.config import settings
 
 class UserFarmService:
     def __init__(self, 
@@ -20,7 +21,7 @@ class UserFarmService:
         return [UserFarmResponse.model_validate(
                 {
                     **farm.__dict__,
-                    "last_collected": int(time.mktime(datetime.timetuple(datetime.now()))),
+                    "last_collected": settings.unixtimestamp,
                     "name": farm.farm_template.name,
                     "image_url": farm.farm_template.image_url
                 }
