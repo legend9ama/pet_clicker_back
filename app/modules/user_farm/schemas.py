@@ -6,7 +6,7 @@ class UserFarmBase(BaseModel):
     level: int = Field(1, gt=0)
 
 class UserFarmPurchase(UserFarmBase):
-    pass
+    farm_id: int = Field(..., gt=0)
 
 class UserFarmUpgrade(BaseModel):
     levels: int = Field(1, gt=0, le=10, description="Number of levels to upgrade (1-10)")

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Header
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.modules.user_farm.service import UserFarmService
 from app.modules.user_farm.repository import UserFarmRepository
@@ -6,9 +6,16 @@ from app.modules.farm_template.repository import FarmTemplateRepository
 from app.modules.clicks.repository import ClickRepository
 from app.modules.user_farm.schemas import *
 from app.core.database import get_db
-from app.core.telegram_validation import validate_telegram_data
+from typing import Annotated
+from app.core.telegram_validation import validate_telegram_data, parse_telegram_data
 
 router = APIRouter(prefix="/farms", tags=["farms"])
+
+async def get_authenticated_user(
+    telegram_init_data: Annotated[str, Header(alias="Telegram-Init-Data")]
+) -> int:    
+    user_data = await parse_telegram_data(telegram_init_data)
+    return user_data.id
 
 @router.get("/", response_model=list[UserFarmResponse])
 async def get_farms(
@@ -24,7 +31,7 @@ async def get_farms(
 @router.post("/purchase", response_model=UserFarmResponse)
 async def purchase_farm(
     data: UserFarmPurchase,
-    telegram_id: int = Depends(validate_telegram_data),
+    telegram_id: int = Depends(get_authenticated_user),
     db: AsyncSession = Depends(get_db)
 ):
     user_farm_repo = UserFarmRepository(db)
@@ -36,7 +43,7 @@ async def purchase_farm(
 @router.post("/{farmId}/collect", response_model=UserFarmCollectionResponse)
 async def purchase_farm(
     farm_id: int,
-    telegram_id: int = Depends(validate_telegram_data),
+    telegram_id: int = Depends(get_authenticated_user),
     db: AsyncSession = Depends(get_db)
 ):
     user_farm_repo = UserFarmRepository(db)
@@ -49,7 +56,7 @@ async def purchase_farm(
 async def upgrade_farm(
     farm_id: int,
     data: UserFarmUpgrade,
-    telegram_id: int = Depends(validate_telegram_data),
+    telegram_id: int = Depends(get_authenticated_user),
     db: AsyncSession = Depends(get_db)
 ):
     user_farm_repo = UserFarmRepository(db)
