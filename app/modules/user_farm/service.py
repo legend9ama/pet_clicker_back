@@ -20,6 +20,7 @@ class UserFarmService:
         return [UserFarmResponse.model_validate(
                 {
                     **farm.__dict__,
+                    "last_collected": int(time.mktime(datetime.timetuple(datetime.now()))),
                     "name": farm.farm_template.name,
                     "image_url": farm.farm_template.image_url
                 }
@@ -37,6 +38,7 @@ class UserFarmService:
             await self.click_repo.decrement_clicks(telegram_id, template.base_price)
             return UserFarmResponse.model_validate({
                     **farm.__dict__,
+                    "last_collected": time,
                     "name": farm.farm_template.name,
                     "image_url": farm.farm_template.image_url
                 })
