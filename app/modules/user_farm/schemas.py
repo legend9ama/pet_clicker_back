@@ -16,7 +16,7 @@ class UserFarmResponse(BaseModel):
     level: int
     current_income: int
     current_upgrade_cost: int
-    last_collected: Optional[float]
+    last_collected: int
     name: str
     image_url: str
     
