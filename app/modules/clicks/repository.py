@@ -28,22 +28,21 @@ class ClickRepository:
         return await self._upsert_clicks(telegram_id, amount)
 
     async def decrement_clicks(self, telegram_id: int, amount: int) -> Clicks:
-        async with self.session.begin():
-            result = await self.session.execute(
-                select(Clicks).where(Clicks.telegram_id == telegram_id)
-            )
-            clicks = result.scalar_one_or_none()
+        result = await self.session.execute(
+            select(Clicks).where(Clicks.telegram_id == telegram_id)
+        )
+        clicks = result.scalar_one_or_none()
+        
+        if not clicks:
+            raise ValueError("User clicks record not found")
+        if clicks.clicks_count < amount:
+            raise ValueError("Insufficient clicks balance")
             
-            if not clicks:
-                raise ValueError("User clicks record not found")
-            if clicks.clicks_count < amount:
-                raise ValueError("Insufficient clicks balance")
-            
-            clicks.clicks_count -= amount
-            clicks.updated_at = func.extract('epoch', func.now())
-            await self.session.commit()
-            await self.session.refresh(clicks)
-            return clicks
+        clicks.clicks_count -= amount
+        clicks.updated_at = func.extract('epoch', func.now())
+        await self.session.commit()
+        await self.session.refresh(clicks)
+        return clicks
 
     async def get_clicks(self, telegram_id: int) -> Clicks:
         result = await self.session.execute(
