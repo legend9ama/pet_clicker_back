@@ -65,8 +65,14 @@ class UserFarmService:
     async def collect_farm(self, telegram_id: int, farm_id: int) -> UserFarmCollectionResponse:
         farm = await self.user_farm_repo.get_farm(telegram_id, farm_id)
         collected = int(farm.current_income / 3600 * (time.mktime(datetime.timetuple(datetime.now())) - farm.last_collected))
-        await self.click_repo.increment_clicks(collected)
-        await self.user_farm_repo.update_last_collected(telegram_id, farm_id)
+        try:
+            await self.click_repo.increment_clicks(collected)
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
+        try:
+            await self.user_farm_repo.update_last_collected(telegram_id, farm_id)
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
         
         return UserFarmCollectionResponse.model_validate(collected)
         
