@@ -13,14 +13,14 @@ class UserFarmUpgrade(BaseModel):
 
 class UserFarmResponse(BaseModel):
     farm_id: int
+    level: int
+    current_income: int
+    current_upgrade_cost: int
+    last_collected: Optional[float]
     name: str
     image_url: str
-    level: int
-    current_income: float
-    current_upgrade_cost: float
-    last_collected: Optional[float]
     
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
 class UserFarmCollectionResponse(BaseModel):
     collected: int

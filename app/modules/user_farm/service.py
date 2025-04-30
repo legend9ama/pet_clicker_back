@@ -17,15 +17,14 @@ class UserFarmService:
 
     async def get_farms(self, telegram_id: int) -> list[UserFarmResponse]:
         farms = await self.user_farm_repo.get_user_farms(telegram_id)
-        return [UserFarmResponse(
-            farm_id=farm.farm_id,
-            level=farm.level,
-            last_collected=farm.last_collected,
-            current_income=farm.current_income,
-            current_upgrade_cost=farm.current_upgrade_cost,
-            name=farm.farm_template.name,  
-            image_url=farm.farm_template.image_url
-        )  for farm in farms]
+        return [UserFarmResponse.model_validate(
+                {
+                    **farm.__dict__,
+                    "name": farm.farm_template.name,
+                    "image_url": farm.farm_template.image_url
+                }
+            )
+        for farm in farms]
 
     async def purchase_farm(self, telegram_id: int, data: UserFarmPurchase) -> UserFarmResponse:
         template = await self.farm_template_repo.get_by_id(data.farm_id)
