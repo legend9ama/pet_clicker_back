@@ -15,4 +15,4 @@ class FarmTemplate(Base):
     is_visible = Column(Boolean, default=False)
 
     
-    user_farms = relationship("UserFarm", back_populates="farm_template")
+    user_farms = relationship("UserFarm", back_populates="farm_template", lazy="raise")
