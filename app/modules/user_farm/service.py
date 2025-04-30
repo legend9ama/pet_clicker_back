@@ -23,8 +23,8 @@ class UserFarmService:
             last_collected=farm.last_collected,
             current_income=farm.current_income,
             current_upgrade_cost=farm.current_upgrade_cost,
-            name=farm.farm_template_name,  
-            image_url=farm.farm_template_image_url
+            name=farm.farm_template.name,  
+            image_url=farm.farm_template.image_url
         )  for farm in farms]
 
     async def purchase_farm(self, telegram_id: int, data: UserFarmPurchase) -> UserFarmResponse:
