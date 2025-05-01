@@ -6,21 +6,21 @@ from app.core.base_repository import BaseRepository
 class FarmTemplateRepository(BaseRepository):
     async def create(self, data: dict) -> FarmTemplate:
         new_template = FarmTemplate(**data)
-        self.db.add(new_template)
-        await self.db.commit()
-        await self.db.refresh(new_template)
+        self._db.add(new_template)
+        await self._db.commit()
+        await self._db.refresh(new_template)
         return new_template
 
     async def get_all(self) -> list[FarmTemplate]:
-        result = await self.db.execute(select(FarmTemplate))
+        result = await self._db.execute(select(FarmTemplate))
         return result.scalars().all()
     
     async def get_all_visible(self) -> list[FarmTemplate]:
-        result = await self.db.execute(select(FarmTemplate).where(FarmTemplate.is_visible == True).order_by(FarmTemplate.base_price))
+        result = await self._db.execute(select(FarmTemplate).where(FarmTemplate.is_visible == True).order_by(FarmTemplate.base_price))
         return result.scalars().all()
 
     async def get_by_id(self, farm_id: int) -> FarmTemplate | None:
-        result = await self.db.execute(
+        result = await self._db.execute(
             select(FarmTemplate).where(FarmTemplate.farm_id == farm_id)
         )
         return result.scalars().first()
@@ -32,14 +32,14 @@ class FarmTemplateRepository(BaseRepository):
             .values(**data)
             .returning(FarmTemplate)
         )
-        result = await self.db.execute(stmt)
-        await self.db.commit()
+        result = await self._db.execute(stmt)
+        await self._db.commit()
         return result.scalars().first()
 
     async def delete(self, farm_id: int) -> bool:
         stmt = delete(FarmTemplate).where(FarmTemplate.farm_id == farm_id)
-        result = await self.db.execute(stmt)
-        await self.db.commit()
+        result = await self._db.execute(stmt)
+        await self._db.commit()
         return result.rowcount > 0
 
     async def toggle_visibility(self, farm_id: int) -> FarmTemplate | None:
@@ -49,6 +49,6 @@ class FarmTemplateRepository(BaseRepository):
             .values(is_visible=~FarmTemplate.is_visible)
             .returning(FarmTemplate)
         )
-        result = await self.db.execute(stmt)
-        await self.db.commit()
+        result = await self._db.execute(stmt)
+        await self._db.commit()
         return result.scalars().first()

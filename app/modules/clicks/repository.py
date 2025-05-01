@@ -6,7 +6,7 @@ from app.core.base_repository import BaseRepository
 
 class ClickRepository(BaseRepository):
     async def get_clicks(self, telegram_id: int) -> Clicks:
-        result = await self.session.execute(
+        result = await self._db.execute(
             select(Clicks).where(Clicks.telegram_id == telegram_id)
         )
         return result.scalar_one_or_none()
@@ -23,15 +23,15 @@ class ClickRepository(BaseRepository):
             }
         ).returning(Clicks)
         
-        result = await self.session.execute(stmt)
-        await self.session.commit()
+        result = await self._db.execute(stmt)
+        await self._db.commit()
         return result.scalar_one()
 
     async def increment_clicks(self, telegram_id: int, amount: int) -> Clicks:
         return await self._upsert_clicks(telegram_id, amount)
 
     async def decrement_clicks(self, telegram_id: int, amount: int) -> Clicks:
-        result = await self.session.execute(
+        result = await self._db.execute(
             select(Clicks).where(Clicks.telegram_id == telegram_id)
         )
         clicks = result.scalar_one_or_none()
@@ -43,8 +43,8 @@ class ClickRepository(BaseRepository):
             
         clicks.clicks_count -= amount
         clicks.updated_at = func.extract('epoch', func.now())
-        await self.session.commit()
-        await self.session.refresh(clicks)
+        await self._db.commit()
+        await self._db.refresh(clicks)
         return clicks
 
     async def has_enough_clicks(self, telegram_id: int, amount: int) -> bool:
