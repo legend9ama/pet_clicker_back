@@ -32,7 +32,15 @@ class UserService:
 
     async def get_leaderboard(self) -> list[LeaderboardUser]:
         users = await self.repo.get_leaderboard()
-        return [LeaderboardUser.model_validate(t) for t in users]
+        return [
+            LeaderboardUser(
+                username=user.username,
+                avatar_url=user.avatar_url,
+                clicks_count=user.clicks.clicks_count if user.clicks else 0,
+                position=i+1
+            )
+            for i, user in enumerate(users)
+        ]
     
     async def update_user(self, telegram_id: int, data: UserUpdate) -> UserResponse:
         user = await self.repo.update(telegram_id, data.model_dump(exclude_unset=True))
