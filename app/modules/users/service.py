@@ -19,7 +19,7 @@ class UserService:
         user_data = await parse_telegram_data(init_data)
         existing_user = await self.repo.get_by_id(user_data.id)
         if existing_user:
-            existing_user = await UserService.update_user(
+            existing_user = await self.update_user(
                 telegram_id=user_data.id,
                 first_name=user_data.first_name,
                 last_name=user_data.last_name,
