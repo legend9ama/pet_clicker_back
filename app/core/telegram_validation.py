@@ -45,5 +45,8 @@ async def parse_telegram_data(init_data: str) -> TelegramUserData:
     
     return TelegramUserData(
         id=int(user_data.get('id')),
-        username=user_data.get('username')
+        first_name=user_data.get('first_name'),
+        last_name=user_data.get('last_name'),
+        username=user_data.get('username'),
+        photo_url=user_data.get('photo_url')
     )

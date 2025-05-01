@@ -21,7 +21,11 @@ class UserService:
 
         new_user = UserCreate(
             telegram_id=user_data.id,
-            username=user_data.username
+            first_name=user_data.first_name,
+            last_name=user_data.last_name,
+            username=user_data.username,
+            photo_url=user_data.photo_url,
+            
         )
         return await self.repo.create(new_user)
 

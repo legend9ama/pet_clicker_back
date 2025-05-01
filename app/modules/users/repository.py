@@ -10,7 +10,10 @@ class UserRepository:
     async def create(self, user: UserCreate) -> User:
         new_user = User(
             telegram_id=user.telegram_id,
-            username=user.username
+            first_name=user.first_name,
+            last_name=user.last_name,
+            username=user.username,
+            photo_url=user.photo_url,
         )
         self.db.add(new_user)
         await self.db.commit()
