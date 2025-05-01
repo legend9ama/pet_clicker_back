@@ -65,7 +65,7 @@ class UserFarmService:
         farm = await self.user_farm_repo.get_farm(telegram_id, farm_id)
         collected = int(farm.current_income / 3600 * (time.mktime(datetime.timetuple(datetime.now())) - farm.last_collected))
         try:
-            await self.click_repo.increment_clicks(collected)
+            await self.click_repo.increment_clicks(telegram_id, collected)
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
         try:
