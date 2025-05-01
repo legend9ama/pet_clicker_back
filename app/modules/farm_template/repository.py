@@ -18,7 +18,7 @@ class FarmTemplateRepository:
         return result.scalars().all()
     
     async def get_all_visible(self) -> list[FarmTemplate]:
-        result = await self.db.execute(select(FarmTemplate).where(FarmTemplate.is_visible == True))
+        result = await self.db.execute(select(FarmTemplate).where(FarmTemplate.is_visible == True).order_by(FarmTemplate.base_price))
         return result.scalars().all()
 
     async def get_by_id(self, farm_id: int) -> FarmTemplate | None:
