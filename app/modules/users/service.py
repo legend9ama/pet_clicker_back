@@ -72,7 +72,7 @@ class UserService:
             updates["photo_url"] = photo_url
         
         if updates:
-            return await self.repo.update_user(telegram_id, updates)
+            return await self.repo.update(telegram_id, updates)
         
         return user
 
