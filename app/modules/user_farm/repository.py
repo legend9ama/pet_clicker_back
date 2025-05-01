@@ -34,10 +34,13 @@ class UserFarmRepository:
 
     async def upgrade_farm(self, telegram_id: int, farm_id: int, levels: int) -> UserFarm:
         farm = await self.db.get(UserFarm, (telegram_id, farm_id))
-        if not farm:
+        template = await self.db.get(FarmTemplate, farm_id)
+        if not farm or not template:
             raise ValueError("Farm not found")
         
         farm.level += levels
+        farm.current_income = template.base_income*(template.income_multiplier**farm.level)
+        farm.current_upgrade_cost = template.base_price*(template.price_multiplier**farm.level)
         await self.db.commit()
         await self.db.refresh(farm)
         return farm

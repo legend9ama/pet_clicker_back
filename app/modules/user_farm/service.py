@@ -47,17 +47,17 @@ class UserFarmService:
 
     async def upgrade_farm(self, telegram_id: int, farm_id: int, data: UserFarmUpgrade) -> UserFarmResponse:
         farm = await self.user_farm_repo.get_farm(telegram_id, farm_id)
-        total_cost = int(sum(
-            farm.current_upgrade_cost * (farm.farm_template.price_multiplier ** i)
-            for i in range(data.levels)
-        ))
         
-        if not await self.click_repo.has_enough_clicks(telegram_id, total_cost):
+        if not await self.click_repo.has_enough_clicks(telegram_id, farm.current_upgrade_cost):
             raise HTTPException(status_code=400, detail="Not enough clicks")
         try:
-            await self.click_repo.decrement_clicks(telegram_id, total_cost)
+            await self.click_repo.decrement_clicks(telegram_id, farm.current_upgrade_cost)
             updated_farm = await self.user_farm_repo.upgrade_farm(telegram_id, farm_id, data.levels)
-            return UserFarmResponse.model_validate(updated_farm)
+            return UserFarmResponse.model_validate({
+                **updated_farm.__dict__,
+                "name": farm.farm_template.name,
+                "image_url": farm.farm_template.image_url
+            })
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
         
