@@ -10,7 +10,7 @@ class UserFarmRepository:
 
     async def get_user_farms(self, telegram_id: int) -> list[UserFarm]:
         result = await self.db.execute(
-            select(UserFarm).options(selectinload(UserFarm.farm_template)).where(UserFarm.telegram_id == telegram_id)
+            select(UserFarm).options(selectinload(UserFarm.farm_template)).where(UserFarm.telegram_id == telegram_id).order_by(UserFarm.current_income)
         )
         return result.unique().scalars().all()
 
