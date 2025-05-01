@@ -18,9 +18,8 @@ class UserService:
         user_data = await parse_telegram_data(init_data)
         existing_user = await self.repo.get_by_id(user_data.id)
         if existing_user:
-            existing_user = self.repo.update(user_data.id, user_data.model_dump(exclude_unset=True))
             return existing_user
-
+        
         new_user = UserCreate(
             telegram_id=user_data.id,
             first_name=user_data.first_name,
