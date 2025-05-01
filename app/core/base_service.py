@@ -1,5 +1,3 @@
-from abc import ABC
-
-class BaseService(ABC):
+class BaseService:
     def __init__(self, repo):
         self.repo = repo
