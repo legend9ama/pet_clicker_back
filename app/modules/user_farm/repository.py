@@ -12,7 +12,7 @@ class UserFarmRepository:
         result = await self.db.execute(
             select(UserFarm).options(selectinload(UserFarm.farm_template)).where(UserFarm.telegram_id == telegram_id).order_by(UserFarm.current_income)
         )
-        return result.unique().scalars().all()
+        return result.scalars().all()
 
     async def get_farm(self, telegram_id: int, farm_id: int) -> UserFarm:
         result = await self.db.execute(select(UserFarm).where(and_(
