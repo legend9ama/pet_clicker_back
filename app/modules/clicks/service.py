@@ -10,7 +10,7 @@ class ClickService(BaseService):
             if self.is_valid(telegram_id, data.amount):
                 clicks = await self.repo.increment_clicks(telegram_id, data.amount)
             else:
-                clicks = await self.repo.increment_clicks(telegram_id, 1000)
+                clicks = await self.repo.increment_clicks(telegram_id, 10)
             return ClickResponse.model_validate(clicks)
         except Exception as e:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Error incrementing clicks: {str(e)}")
@@ -23,12 +23,13 @@ class ClickService(BaseService):
                 detail="Clicks record not found"
             )
         time_passed = settings.unixtimestamp-clicks.updated_at
-        if time_passed < 20 and amount >= 5000:
+        if time_passed < 20:
             return False
-        elif time_passed < 6 and amount >= 840:
+        if amount >= 5000:
             return False
         else:
             return True
+        
             
     
     async def process_decrement(self, telegram_id: int, data: ClickDecrementRequest) -> ClickResponse:
