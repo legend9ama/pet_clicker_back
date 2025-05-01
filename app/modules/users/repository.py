@@ -4,7 +4,7 @@ from sqlalchemy.orm import joinedload
 from app.models.user import User
 from app.modules.users.schemas import UserCreate
 from app.models.click import Clicks
-from core.base_repository import BaseRepository
+from app.core.base_repository import BaseRepository
 
 class UserRepository(BaseRepository):
     async def create(self, user: UserCreate) -> User:

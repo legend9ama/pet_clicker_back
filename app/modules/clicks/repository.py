@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, insert, update, func
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from app.models.click import Clicks
-from core.base_repository import BaseRepository
+from app.core.base_repository import BaseRepository
 
 class ClickRepository(BaseRepository):
     async def get_clicks(self, telegram_id: int) -> Clicks:

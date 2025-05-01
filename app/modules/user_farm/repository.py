@@ -3,7 +3,7 @@ from sqlalchemy import select, and_, delete, func
 from app.models.user_farm import UserFarm
 from app.models.farm_template import FarmTemplate
 from sqlalchemy.orm import selectinload
-from core.base_repository import BaseRepository
+from app.core.base_repository import BaseRepository
 
 class UserFarmRepository(BaseRepository):
     async def get_user_farms(self, telegram_id: int) -> list[UserFarm]:
