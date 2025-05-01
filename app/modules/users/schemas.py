@@ -26,7 +26,7 @@ class LeaderboardUser(BaseModel):
     position: int
 
     model_config = ConfigDict(from_attributes=True)
-    
+
 class UserUpdate(BaseModel):
     username: Optional[str] = Field(None, min_length=3, max_length=32)
 
