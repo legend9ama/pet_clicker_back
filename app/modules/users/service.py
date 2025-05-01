@@ -35,7 +35,7 @@ class UserService:
         return [
             LeaderboardUser(
                 username=user.username,
-                avatar_url=user.avatar_url,
+                photo_url=user.photo_url,
                 clicks_count=user.clicks.clicks_count if user.clicks else 0,
                 position=i+1
             )
