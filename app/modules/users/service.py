@@ -42,7 +42,7 @@ class UserService:
         users = await self.repo.get_leaderboard()
         return [
             LeaderboardUser(
-                username=user.username,
+                username=user.username if user.username else user.first_name,
                 photo_url=user.photo_url,
                 clicks_count=user.clicks.clicks_count if user.clicks else 0,
                 position=i+1

@@ -21,7 +21,7 @@ class UserRepository:
         await self.db.refresh(new_user)
         return new_user
 
-    async def get_leaderboard(self, limit: int = 10) -> list[User]:
+    async def get_leaderboard(self, limit: int = 5) -> list[User]:
         result = await self.db.execute(
             select(User).options(joinedload(User.clicks))
             .outerjoin(Clicks)
