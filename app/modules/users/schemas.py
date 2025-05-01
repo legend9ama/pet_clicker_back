@@ -21,7 +21,7 @@ class UserCreate(BaseModel):
 
 class LeaderboardUser(BaseModel):
     username: str
-    avatar_url: str | None
+    photo_url: str | None
     clicks_count: int
     position: int
 
