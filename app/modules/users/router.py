@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, status, Header
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.modules.users.schemas import (
     UserResponse,
-    UserUpdate
+    UserUpdate,
+    LeaderboardUser
 )
 from app.modules.users.service import UserService
 from app.modules.users.repository import UserRepository
@@ -14,7 +15,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 router = APIRouter(prefix="/users", tags=["users"])
 security = HTTPBearer()
 
-@router.get("", response_model=UserResponse)
+@router.get("", response_model=list[LeaderboardUser])
 async def get_leaderboard(
     db: AsyncSession = Depends(get_db)
 ):
