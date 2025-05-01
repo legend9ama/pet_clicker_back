@@ -1,8 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, update, delete
+from sqlalchemy import select, update, delete, func
+from sqlalchemy.orm import joinedload
 from app.models.user import User
 from app.modules.users.schemas import UserCreate
-
+from app.models.click import Clicks
 class UserRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
@@ -20,6 +21,15 @@ class UserRepository:
         await self.db.refresh(new_user)
         return new_user
 
+    async def get_leaderboard(self, limit: int = 10) -> list[User]:
+        result = await self.db.execute(
+            select(User).options(joinedload(User.clicks))
+            .outerjoin(Clicks)
+            .order_by(func.coalesce(Clicks.clicks_count, 0).desc())
+            .limit(limit)
+        )
+        return result.scalars().all()
+    
     async def get_by_id(self, telegram_id: int) -> User | None:
         result = await self.db.execute(
             select(User).where(User.telegram_id == telegram_id)
