@@ -1,15 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Header
+from fastapi import APIRouter, Depends, status, Header
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.modules.users.schemas import (
-    UserResponse,
-    UserUpdate,
-    LeaderboardUser
-)
+from app.modules.users.schemas import UserResponse, UserUpdate, LeaderboardUser
 from app.modules.users.service import UserService
 from app.modules.users.repository import UserRepository
 from app.core.database import get_db
-from app.core.telegram_validation import parse_telegram_data
-from app.core.auth import validate_admin_token
+from app.core.security.telegram_validation import parse_telegram_data
+from app.core.security.auth import validate_admin_token
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 router = APIRouter(prefix="/users", tags=["users"])

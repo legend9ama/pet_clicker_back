@@ -1,20 +1,12 @@
 from fastapi import HTTPException, status
 from app.models.user import User
 from app.modules.users.repository import UserRepository
-from app.modules.users.schemas import (
-    UserCreate,
-    UserResponse,
-    UserUpdate,
-    LeaderboardUser
-)
-from app.core.telegram_validation import parse_telegram_data
-from app.core.config import settings
+from app.modules.users.schemas import UserCreate, UserResponse, LeaderboardUser
+from app.core.security.telegram_validation import parse_telegram_data
 from typing import Optional
+from app.core.base_service import BaseService
 
-class UserService:
-    def __init__(self, repo: UserRepository):
-        self.repo = repo
-
+class UserService(BaseService):
     async def get_or_create_user(self, init_data: str) -> UserResponse:
         user_data = await parse_telegram_data(init_data)
         existing_user = await self.repo.get_by_id(user_data.id)

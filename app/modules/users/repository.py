@@ -4,10 +4,9 @@ from sqlalchemy.orm import joinedload
 from app.models.user import User
 from app.modules.users.schemas import UserCreate
 from app.models.click import Clicks
-class UserRepository:
-    def __init__(self, db: AsyncSession):
-        self.db = db
+from core.base_repository import BaseRepository
 
+class UserRepository(BaseRepository):
     async def create(self, user: UserCreate) -> User:
         new_user = User(
             telegram_id=user.telegram_id,
@@ -16,13 +15,13 @@ class UserRepository:
             username=user.username,
             photo_url=user.photo_url,
         )
-        self.db.add(new_user)
-        await self.db.commit()
-        await self.db.refresh(new_user)
+        self._db.add(new_user)
+        await self._db.commit()
+        await self._db.refresh(new_user)
         return new_user
 
     async def get_leaderboard(self, limit: int = 5) -> list[User]:
-        result = await self.db.execute(
+        result = await self._db.execute(
             select(User).options(joinedload(User.clicks))
             .outerjoin(Clicks)
             .order_by(func.coalesce(Clicks.clicks_count, 0).desc())
@@ -31,7 +30,7 @@ class UserRepository:
         return result.scalars().all()
     
     async def get_by_id(self, telegram_id: int) -> User | None:
-        result = await self.db.execute(
+        result = await self._db.execute(
             select(User).where(User.telegram_id == telegram_id)
         )
         return result.scalars().first()
@@ -41,8 +40,8 @@ class UserRepository:
         if user:
             return user
         new_user = User(**user_data)
-        self.db.add(new_user)
-        await self.db.commit()
+        self._db.add(new_user)
+        await self._db.commit()
         return new_user
 
     async def update(self, telegram_id: int, data: dict) -> User | None:
@@ -52,14 +51,14 @@ class UserRepository:
             .values(**data)
             .returning(User)
         )
-        result = await self.db.execute(stmt)
-        await self.db.commit()
+        result = await self._db.execute(stmt)
+        await self._db.commit()
         return result.scalars().first()
 
     async def delete(self, telegram_id: int) -> bool:
         stmt = delete(User).where(User.telegram_id == telegram_id)
-        result = await self.db.execute(stmt)
-        await self.db.commit()
+        result = await self._db.execute(stmt)
+        await self._db.commit()
         return result.rowcount > 0
 
     async def get_user_stats(self, telegram_id: int) -> dict:

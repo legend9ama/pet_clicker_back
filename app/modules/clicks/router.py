@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Header
+from fastapi import APIRouter, Depends, Header
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.modules.clicks.service import ClickService
 from app.modules.clicks.repository import ClickRepository
@@ -8,12 +8,8 @@ from app.modules.clicks.schemas import (
     ClickResponse
 )
 from app.core.database import get_db
-from app.core.telegram_validation import validate_telegram_data, parse_telegram_data
-from app.core.config import settings
-from urllib.parse import parse_qs
-import json
+from app.core.security.telegram_validation import parse_telegram_data
 from typing import Annotated
-
 
 router = APIRouter(prefix="/clicks", tags=["clicks"])
 

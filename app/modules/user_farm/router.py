@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Header, Body
+from fastapi import APIRouter, Depends, Header, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.modules.user_farm.service import UserFarmService
 from app.modules.user_farm.repository import UserFarmRepository
@@ -7,7 +7,7 @@ from app.modules.clicks.repository import ClickRepository
 from app.modules.user_farm.schemas import *
 from app.core.database import get_db
 from typing import Annotated
-from app.core.telegram_validation import validate_telegram_data, parse_telegram_data
+from app.core.security.telegram_validation import parse_telegram_data
 
 router = APIRouter(prefix="/farms", tags=["farms"])
 

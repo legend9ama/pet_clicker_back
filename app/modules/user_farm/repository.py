@@ -1,13 +1,11 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, and_, update, delete, func
+from sqlalchemy import select, and_, delete, func
 from app.models.user_farm import UserFarm
 from app.models.farm_template import FarmTemplate
 from sqlalchemy.orm import selectinload
+from core.base_repository import BaseRepository
 
-class UserFarmRepository:
-    def __init__(self, db: AsyncSession):
-        self.db = db
-
+class UserFarmRepository(BaseRepository):
     async def get_user_farms(self, telegram_id: int) -> list[UserFarm]:
         result = await self.db.execute(
             select(UserFarm).options(selectinload(UserFarm.farm_template)).where(UserFarm.telegram_id == telegram_id).order_by(UserFarm.current_income)

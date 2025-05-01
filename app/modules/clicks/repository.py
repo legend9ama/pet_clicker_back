@@ -2,12 +2,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, insert, update, func
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from app.models.click import Clicks
-from app.models.user import User
+from core.base_repository import BaseRepository
 
-class ClickRepository:
-    def __init__(self, session: AsyncSession):
-        self.session = session
-
+class ClickRepository(BaseRepository):
+    async def get_clicks(self, telegram_id: int) -> Clicks:
+        result = await self.session.execute(
+            select(Clicks).where(Clicks.telegram_id == telegram_id)
+        )
+        return result.scalar_one_or_none()
+    
     async def _upsert_clicks(self, telegram_id: int, amount: int) -> Clicks:
         stmt = pg_insert(Clicks).values(
             telegram_id=telegram_id,
@@ -44,12 +47,6 @@ class ClickRepository:
         await self.session.refresh(clicks)
         return clicks
 
-    async def get_clicks(self, telegram_id: int) -> Clicks:
-        result = await self.session.execute(
-            select(Clicks).where(Clicks.telegram_id == telegram_id)
-        )
-        return result.scalar_one_or_none()
-    
     async def has_enough_clicks(self, telegram_id: int, amount: int) -> bool:
         clicks = await self.get_clicks(telegram_id)
         return clicks.clicks_count >= amount

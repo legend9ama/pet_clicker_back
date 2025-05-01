@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.modules.farm_template.service import FarmTemplateService
@@ -9,8 +9,7 @@ from app.modules.farm_template.schemas import (
     FarmTemplateResponse
 )
 from app.core.database import get_db
-from app.core.config import settings
-from app.core.auth import validate_admin_token
+from app.core.security.auth import validate_admin_token
 
 router = APIRouter(prefix="/admin/farms", tags=["Admin Farms"])
 security = HTTPBearer()

@@ -1,15 +1,9 @@
 from fastapi import HTTPException, status
 from app.modules.farm_template.repository import FarmTemplateRepository
-from app.modules.farm_template.schemas import (
-    FarmTemplateCreate,
-    FarmTemplateUpdate,
-    FarmTemplateResponse
-)
+from app.modules.farm_template.schemas import FarmTemplateCreate, FarmTemplateUpdate, FarmTemplateResponse
+from app.core.base_service import BaseService
 
-class FarmTemplateService:
-    def __init__(self, repo: FarmTemplateRepository):
-        self.repo = repo
-
+class FarmTemplateService(BaseService):
     async def create_template(self, data: FarmTemplateCreate) -> FarmTemplateResponse:
         try:
             template = await self.repo.create(data.model_dump())

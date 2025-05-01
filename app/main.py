@@ -1,9 +1,7 @@
-from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from app.core.database import engine, Base
-
+from contextlib import asynccontextmanager
+from fastapi.middleware.cors import CORSMiddleware
 from app.modules.users.router import router as users_router
 from app.modules.clicks.router import router as clicks_router
 from app.modules.farm_template.router import router as farm_template_router
@@ -29,9 +27,10 @@ app = FastAPI(
 )
 #app.add_middleware(HTTPSRedirectMiddleware)
 # CORS
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["https://pet-clicker-18708.web.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

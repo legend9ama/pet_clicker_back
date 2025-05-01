@@ -1,7 +1,5 @@
 from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional
-import json
-from urllib.parse import parse_qs
 
 class TelegramUserData(BaseModel):
     id: int

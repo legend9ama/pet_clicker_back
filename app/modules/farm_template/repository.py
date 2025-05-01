@@ -1,11 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, delete
 from app.models.farm_template import FarmTemplate
+from core.base_repository import BaseRepository
 
-class FarmTemplateRepository:
-    def __init__(self, db: AsyncSession):
-        self.db = db
-
+class FarmTemplateRepository(BaseRepository):
     async def create(self, data: dict) -> FarmTemplate:
         new_template = FarmTemplate(**data)
         self.db.add(new_template)

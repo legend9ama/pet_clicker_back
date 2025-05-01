@@ -1,4 +1,4 @@
-from fastapi import HTTPException, status
+from fastapi import HTTPException
 from app.modules.user_farm.repository import UserFarmRepository
 from app.modules.farm_template.repository import FarmTemplateRepository
 from app.modules.clicks.repository import ClickRepository
