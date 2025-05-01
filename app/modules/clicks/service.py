@@ -23,14 +23,14 @@ class ClickService(BaseService):
                 detail="Clicks record not found"
             )
         time_passed = settings.unixtimestamp-clicks.updated_at
+        if time_passed < 7 and amount <= 1000:
+            return True
         if time_passed < 20:
             return False
         if amount >= 5000:
             return False
         else:
-            return True
-        
-            
+            return True            
     
     async def process_decrement(self, telegram_id: int, data: ClickDecrementRequest) -> ClickResponse:
         try:
