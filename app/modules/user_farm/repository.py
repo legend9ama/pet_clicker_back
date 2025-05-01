@@ -20,7 +20,7 @@ class UserFarmRepository:
             UserFarm.farm_id == farm_id
             ))
         )
-        return result.scalars().all()
+        return result.scalar_one_or_none()
     
     async def create_farm(self, telegram_id: int, farm_id: int) -> UserFarm:
         existing = await self.db.get(UserFarm, (telegram_id, farm_id))
