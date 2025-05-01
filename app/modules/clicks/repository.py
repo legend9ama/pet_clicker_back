@@ -49,6 +49,7 @@ class ClickRepository:
             select(Clicks).where(Clicks.telegram_id == telegram_id)
         )
         return result.scalar_one_or_none()
+    
     async def has_enough_clicks(self, telegram_id: int, amount: int) -> bool:
         clicks = await self.get_clicks(telegram_id)
         return clicks.clicks_count >= amount
