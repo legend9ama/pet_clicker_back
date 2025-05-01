@@ -45,7 +45,7 @@ async def decrement_clicks(
     service = ClickService(repo)
     return await service.process_decrement(user_id, request)
 
-@router.get("/", response_model=ClickResponse)
+@router.get("", response_model=ClickResponse)
 async def get_clicks(
     user_id: int = Depends(get_authenticated_user),
     db: AsyncSession = Depends(get_db)

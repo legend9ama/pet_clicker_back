@@ -17,7 +17,7 @@ async def get_authenticated_user(
     user_data = await parse_telegram_data(telegram_init_data)
     return user_data.id
 
-@router.get("/", response_model=list[UserFarmResponse])
+@router.get("", response_model=list[UserFarmResponse])
 async def get_farms(
     telegram_id: int = Depends(get_authenticated_user),
     db: AsyncSession = Depends(get_db)
