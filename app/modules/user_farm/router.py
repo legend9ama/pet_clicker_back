@@ -14,6 +14,7 @@ router = APIRouter(prefix="/farms", tags=["farms"])
 async def get_authenticated_user(
     telegram_init_data: Annotated[str, Header(alias="Telegram-Init-Data")]
 ) -> int:    
+    print("Authenticating...")
     user_data = await parse_telegram_data(telegram_init_data)
     return user_data.id
 
