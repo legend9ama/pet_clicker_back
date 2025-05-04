@@ -9,7 +9,7 @@ from app.modules.farm_template.schemas import (
     FarmTemplateResponse
 )
 from app.core.database import get_db
-from app.core.security.auth import validate_admin_token
+from app.core.security.auth import AdminValidationStrategy
 
 router = APIRouter(prefix="/admin/farms", tags=["Admin Farms"])
 security = HTTPBearer()
@@ -20,7 +20,7 @@ async def create_farm_template(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: AsyncSession = Depends(get_db)
 ):
-    await validate_admin_token(credentials.credentials)
+    await AdminValidationStrategy.validate(credentials.credentials)
     repo = FarmTemplateRepository(db)
     service = FarmTemplateService(repo)
     return await service.create_template(data)
@@ -30,7 +30,7 @@ async def get_all_farm_templates(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: AsyncSession = Depends(get_db)
 ):
-    await validate_admin_token(credentials.credentials)
+    await AdminValidationStrategy.validate(credentials.credentials)
     repo = FarmTemplateRepository(db)
     service = FarmTemplateService(repo)
     return await service.get_all_templates()
@@ -49,7 +49,7 @@ async def get_farm_template(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: AsyncSession = Depends(get_db)
 ):
-    await validate_admin_token(credentials.credentials)
+    await AdminValidationStrategy.validate(credentials.credentials)
     repo = FarmTemplateRepository(db)
     service = FarmTemplateService(repo)
     return await service.get_template(farm_id)
@@ -61,7 +61,7 @@ async def update_farm_template(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: AsyncSession = Depends(get_db)
 ):
-    await validate_admin_token(credentials.credentials)
+    await AdminValidationStrategy.validate(credentials.credentials)
     repo = FarmTemplateRepository(db)
     service = FarmTemplateService(repo)
     return await service.update_template(farm_id, data)
@@ -72,7 +72,7 @@ async def delete_farm_template(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: AsyncSession = Depends(get_db)
 ):
-    await validate_admin_token(credentials.credentials)
+    await AdminValidationStrategy.validate(credentials.credentials)
     repo = FarmTemplateRepository(db)
     service = FarmTemplateService(repo)
     await service.delete_template(farm_id)
@@ -83,7 +83,7 @@ async def toggle_farm_visibility(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: AsyncSession = Depends(get_db)
 ):
-    await validate_admin_token(credentials.credentials)
+    await AdminValidationStrategy.validate(credentials.credentials)
     repo = FarmTemplateRepository(db)
     service = FarmTemplateService(repo)
     return await service.toggle_visibility(farm_id)
