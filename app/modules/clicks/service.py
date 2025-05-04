@@ -7,7 +7,8 @@ from app.core.base_service import BaseService
 class ClickService(BaseService):
     async def process_increment(self, telegram_id: int, data: ClickIncrementRequest) -> ClickResponse:
         try:
-            if self.is_valid(telegram_id, data.amount):
+            valid = await self.is_valid(telegram_id, data.amount)
+            if valid:
                 clicks = await self.repo.increment_clicks(telegram_id, data.amount)
             else:
                 raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"Error incrementing clicks: {str(e)}")
