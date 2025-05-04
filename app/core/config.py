@@ -10,7 +10,7 @@ class Settings:
     def __init__(self):
         self.__bot_token: Optional[str] = None
         self.__db_url: Optional[str] = None
-        self.__api_secret: Optional[str] = None;
+        self.__api_secret: Optional[str] = None
         self.__load_environment()
         self.__unixtimestamp: Optional[int] = None
 
@@ -49,6 +49,5 @@ class Settings:
         if not key:
             raise ValueError("ADMIN_SECRET_KEY not set")
         return key
-    
 
 settings = Settings()

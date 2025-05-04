@@ -6,8 +6,9 @@ from app.modules.user_farm.schemas import *
 from datetime import datetime
 import time
 from app.core.config import settings
+from app.core.base_service import BaseService
 
-class UserFarmService:
+class UserFarmService(BaseService):
     def __init__(self, 
                  user_farm_repo: UserFarmRepository,
                  farm_template_repo: FarmTemplateRepository,
