@@ -7,6 +7,7 @@ The application is a **Telegram-based clicker game** where users:
 - Earn "Pet coins" through manual interaction or passive income through farms
 - Buy/upgrade farms using in-game currency
 - Compete via leaderboards
+
 **Objectives**:  
 - Implement core clicker game mechanics in Python  
 - Design using OOP principles and patterns
@@ -131,7 +132,6 @@ class AdminKeyValidator(ValidationStrategy):
 - **Frontend**:
   - React
   - Firebase Hosting
-  - Firestore (Optional for real-time features)
 - **CI/CD**: 
   - Cloud Build
 - **Monitoring**:
