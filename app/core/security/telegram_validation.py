@@ -9,7 +9,7 @@ import json
 from app.core.security.validation_strategy import ValidationStrategy
 
 class TelegramValidationStrategy(ValidationStrategy):
-    async def validate(data: str, bot_token: str) -> bool:
+    async def validate(self, data: str, bot_token: str) -> bool:
         """
         https://core.telegram.org/bots/webapps#validating-data-received-via-the-mini-app
         """
@@ -39,7 +39,8 @@ class TelegramValidationStrategy(ValidationStrategy):
             return False
 
 async def parse_telegram_data(init_data: str) -> TelegramUserData:
-    if not await TelegramValidationStrategy.validate(init_data, settings.bot_token):
+    validator = TelegramValidationStrategy()
+    if not await validator.validate(init_data, settings.bot_token):
         raise HTTPException(status_code=401, detail="Invalid Telegram auth")
     parsed = parse_qs(init_data)
     user_data = json.loads(parsed['user'][0])

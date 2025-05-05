@@ -4,7 +4,7 @@ from app.core.config import settings
 from app.core.security.validation_strategy import ValidationStrategy
 
 class AdminValidationStrategy(ValidationStrategy):
-    async def validate(token: str):
+    async def validate(self, token: str):
         try:
             payload = jwt.decode(
                 token,
