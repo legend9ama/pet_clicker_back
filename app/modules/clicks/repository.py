@@ -9,27 +9,36 @@ from datetime import datetime
 class ClickRepository(BaseRepository):
     async def get_clicks(self, telegram_id: int) -> Clicks:
         result = await self._db.execute(
-            select(Clicks).where(Clicks.telegram_id == telegram_id)
+            select(Clicks).where(Clicks.telegram_id == telegram_id).with_for_update()
         )
-        if result:
-            return result.scalar_one_or_none()
-        new_click = ClickCreate(
-            telegram_id=telegram_id,
-            clicks_count=0,
-            updated_at=int(time.mktime(datetime.timetuple(datetime.now()))))
-        self._db.add(new_click)
-        await self._db.commit()
-        await self._db.refresh(new_click)
-        return new_click
-    
+        record = result.scalar_one_or_none()
+        if not record:
+            return await self._create_default_clicks(telegram_id)
+        return record
+            
+    async def _create_default_clicks(self, telegram_id: int) -> Clicks:
+        new_clicks = Clicks(
+                telegram_id=telegram_id,
+                clicks_count=0,
+                updated_at=int(time.mktime(datetime.timetuple(datetime.now()))))
+        try:
+            self._db.add(new_clicks)
+            await self._db.commit()
+            await self._db.refresh(new_clicks)
+            return new_clicks
+        except Exception as e:
+            await self._db.rollback()
+            return await self.get_clicks(telegram_id)
+        
     async def _upsert_clicks(self, telegram_id: int, amount: int) -> Clicks:
         stmt = pg_insert(Clicks).values(
             telegram_id=telegram_id,
-            clicks_count=amount
+            clicks_count=amount,
+            updated_at=func.extract('epoch', func.now())
         ).on_conflict_do_update(
             index_elements=[Clicks.telegram_id],
             set_={
-                'clicks_count': Clicks.clicks_count + amount if Clicks.clicks_count + amount else amount,
+                'clicks_count': Clicks.clicks_count + amount,
                 'updated_at': func.extract('epoch', func.now())
             }
         ).returning(Clicks)

@@ -48,9 +48,4 @@ class ClickService(BaseService):
 
     async def get_current_clicks(self, telegram_id: int) -> ClickResponse:
         clicks = await self.repo.get_clicks(telegram_id)
-        if not clicks:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Clicks record not found"
-            )
         return ClickResponse.model_validate(clicks)
