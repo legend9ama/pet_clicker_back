@@ -9,6 +9,8 @@ class ClickRepository(BaseRepository):
         result = await self._db.execute(
             select(Clicks).where(Clicks.telegram_id == telegram_id)
         )
+        if not result:
+            return await self._upsert_clicks(telegram_id, 0)
         return result.scalar_one_or_none()
     
     async def _upsert_clicks(self, telegram_id: int, amount: int) -> Clicks:
@@ -18,7 +20,7 @@ class ClickRepository(BaseRepository):
         ).on_conflict_do_update(
             index_elements=[Clicks.telegram_id],
             set_={
-                'clicks_count': Clicks.clicks_count + amount,
+                'clicks_count': Clicks.clicks_count + amount if Clicks.clicks_count + amount else amount,
                 'updated_at': func.extract('epoch', func.now())
             }
         ).returning(Clicks)
