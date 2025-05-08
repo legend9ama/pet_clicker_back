@@ -11,7 +11,7 @@ class ClickService(BaseService):
             if valid:
                 clicks = await self.repo.increment_clicks(telegram_id, data.amount)
             else:
-                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"Error incrementing clicks: {str(e)}")
+                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"Error incrementing clicks: {"Not Valid"}")
             return ClickResponse.model_validate(clicks)
         except Exception as e:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Error incrementing clicks: {str(e)}")
