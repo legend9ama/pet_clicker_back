@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 from app.modules.clicks.repository import ClickRepository
-from app.modules.clicks.schemas import ClickIncrementRequest, ClickDecrementRequest, ClickResponse
+from app.modules.clicks.schemas import ClickIncrementRequest, ClickCreate, ClickDecrementRequest, ClickResponse
 from app.core.config import settings
 from app.core.base_service import BaseService
 
@@ -46,6 +46,10 @@ class ClickService(BaseService):
                 detail=f"Error decrementing clicks: {str(e)}"
             )
 
-    async def get_current_clicks(self, telegram_id: int) -> ClickResponse:
+    async def get_or_create_current_clicks(self, telegram_id: int) -> ClickResponse:
         clicks = await self.repo.get_clicks(telegram_id)
-        return ClickResponse.model_validate(clicks)
+        existing_clicks = await self.repo.get_by_id(telegram_id)
+        if existing_clicks:
+            return existing_clicks
+        new_clicks = ClickCreate(telegram_id=telegram_id, clicks_count=0)
+        return await self.repo.create(clicks)

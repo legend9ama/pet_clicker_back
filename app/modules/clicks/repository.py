@@ -11,15 +11,12 @@ class ClickRepository(BaseRepository):
         result = await self._db.execute(
             select(Clicks).where(Clicks.telegram_id == telegram_id)
         )
-        if result:
-            return result.scalars().first()
-        record = await self._create_default_clicks(telegram_id)
-        return record
+        return result.scalars().first()
             
-    async def _create_default_clicks(self, telegram_id: int) -> Clicks:
+    async def create(self, clicks: ClickCreate) -> Clicks:
         new_clicks = Clicks(
-                telegram_id=telegram_id,
-                clicks_count=0,
+                telegram_id=clicks.telegram_id,
+                clicks_count=clicks.clicks_count,
                 )
         self._db.add(new_clicks)
         await self._db.commit()

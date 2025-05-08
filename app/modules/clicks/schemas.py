@@ -24,9 +24,3 @@ class ClickResponse(BaseModel):
     updated_at: int
 
     model_config = ConfigDict(from_attributes=True)
-
-    @field_validator('clicks_count')
-    def validate_clicks(cls, v):
-        if v < 0:
-            raise ValueError('Clicks count cannot be negative')
-        return v

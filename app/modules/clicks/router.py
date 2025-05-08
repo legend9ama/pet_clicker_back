@@ -48,4 +48,4 @@ async def get_clicks(
 ):
     repo = ClickRepository(db)
     service = ClickService(repo)
-    return await service.get_current_clicks(user_id)
+    return await service.get_or_create_current_clicks(user_id)
