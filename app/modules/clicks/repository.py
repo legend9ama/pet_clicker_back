@@ -11,23 +11,20 @@ class ClickRepository(BaseRepository):
         result = await self._db.execute(
             select(Clicks).where(Clicks.telegram_id == telegram_id)
         )
-        record = result.scalar_one_or_none()
-        if not record:
-            return await self._create_default_clicks(telegram_id)
+        if result:
+            return result.scalars().first()
+        record = await self._create_default_clicks(telegram_id)
         return record
             
     async def _create_default_clicks(self, telegram_id: int) -> Clicks:
         new_clicks = Clicks(
                 telegram_id=telegram_id,
                 clicks_count=0,
-                updated_at=int(time.mktime(datetime.timetuple(datetime.now()))))
-        try:
-            self._db.add(new_clicks)
-            await self._db.commit()
-            await self._db.refresh(new_clicks)
-            return new_clicks
-        except Exception as e:
-            await self._db.rollback()
+                )
+        self._db.add(new_clicks)
+        await self._db.commit()
+        await self._db.refresh(new_clicks)
+        return new_clicks
         
     async def _upsert_clicks(self, telegram_id: int, amount: int) -> Clicks:
         stmt = pg_insert(Clicks).values(
