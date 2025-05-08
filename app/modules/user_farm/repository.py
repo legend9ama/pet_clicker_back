@@ -25,7 +25,7 @@ class UserFarmRepository(BaseRepository):
         template = await self._db.get(FarmTemplate, farm_id)
         if existing:
             raise ValueError("Farm already owned")
-        new_farm = UserFarm(telegram_id=telegram_id, farm_id=farm_id, level = 1, last_collected=func.extract('epoch', func.now()), current_income=template.base_income, current_upgrade_cost=template.base_price*template.price_multiplier)
+        new_farm = UserFarm(telegram_id=telegram_id, farm_id=farm_id, level = 1, last_collected=func.extract('epoch', func.now()), current_income=template.base_income, current_upgrade_cost=int(template.base_price*template.price_multiplier))
         self._db.add(new_farm)
         await self._db.commit()
         return new_farm
