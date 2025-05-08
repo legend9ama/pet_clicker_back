@@ -47,9 +47,8 @@ class ClickService(BaseService):
             )
 
     async def get_or_create_current_clicks(self, telegram_id: int) -> ClickResponse:
-        clicks = await self.repo.get_clicks(telegram_id)
-        existing_clicks = await self.repo.get_by_id(telegram_id)
+        existing_clicks = await self.repo.get_clicks(telegram_id)
         if existing_clicks:
             return existing_clicks
         new_clicks = ClickCreate(telegram_id=telegram_id, clicks_count=0)
-        return await self.repo.create(clicks)
+        return await self.repo.create(new_clicks)
