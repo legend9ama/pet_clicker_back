@@ -19,7 +19,7 @@ class ClickService(BaseService):
     async def is_valid(self, telegram_id: int, amount: int) -> bool:
         clicks = await self.repo.get_clicks(telegram_id)
         time_passed = settings.unixtimestamp-clicks.updated_at
-        if time_passed < 7 and amount <= 300:
+        if time_passed < 5 and amount <= 300:
             return True
         if time_passed < 20:
             return False
