@@ -3,7 +3,12 @@ from typing import Literal
 
 class ClickBase(BaseModel):
     amount: int = Field(..., gt=0, description="Must be positive integer")
-
+    
+class ClickCreate(BaseModel):
+    telegram_id: int
+    clicks_count: int
+    updated_at: int
+    
 class ClickIncrementRequest(ClickBase):
     source: Literal['manual', 'farm'] = Field(
         'manual', 
