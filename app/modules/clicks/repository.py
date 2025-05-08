@@ -9,7 +9,7 @@ from datetime import datetime
 class ClickRepository(BaseRepository):
     async def get_clicks(self, telegram_id: int) -> Clicks:
         result = await self._db.execute(
-            select(Clicks).where(Clicks.telegram_id == telegram_id).with_for_update()
+            select(Clicks).where(Clicks.telegram_id == telegram_id)
         )
         record = result.scalar_one_or_none()
         if not record:
@@ -28,7 +28,6 @@ class ClickRepository(BaseRepository):
             return new_clicks
         except Exception as e:
             await self._db.rollback()
-            return await self.get_clicks(telegram_id)
         
     async def _upsert_clicks(self, telegram_id: int, amount: int) -> Clicks:
         stmt = pg_insert(Clicks).values(
