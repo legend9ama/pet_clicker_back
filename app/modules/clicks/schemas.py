@@ -7,7 +7,6 @@ class ClickBase(BaseModel):
 class ClickCreate(BaseModel):
     telegram_id: int
     clicks_count: int
-    updated_at: int
     
 class ClickIncrementRequest(ClickBase):
     source: Literal['manual', 'farm'] = Field(
