@@ -5,7 +5,7 @@ from app.core.database import Base
 class FarmTemplate(Base):
     __tablename__ = 'farm_templates'
     
-    farm_id = Column(Integer, primary_key=True)
+    farm_id = Column(BigInteger, primary_key=True)
     name = Column(String(100), nullable=False)
     image_url = Column(String(500), nullable=False)
     base_price = Column(BigInteger, nullable=False)
