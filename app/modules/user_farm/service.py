@@ -62,7 +62,8 @@ class UserFarmService(BaseService):
             return UserFarmResponse.model_validate({
                 **updated_farm.__dict__,
                 "name": farm.farm_template.name,
-                "image_url": farm.farm_template.image_url
+                "image_url": farm.farm_template.image_url,
+                "clicks_needed": farm.farm_template.clicks_needed
             })
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
