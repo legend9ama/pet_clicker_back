@@ -36,7 +36,7 @@ class UserService(BaseService):
             LeaderboardUser(
                 username=user.username if user.username else user.first_name,
                 photo_url=user.photo_url,
-                pet_coins=user.clicks.pet_coins if user.pet_coins else 0,
+                pet_coins=user.clicks.pet_coins if user.clicks else 0,
                 position=i+1
             )
             for i, user in enumerate(users)
