@@ -28,6 +28,7 @@ class UserFarmResponse(BaseModel):
     last_collected: int
     name: str
     image_url: str
+    clicks_needed: int
     
     model_config = ConfigDict(from_attributes=True)
 

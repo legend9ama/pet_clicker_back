@@ -24,7 +24,7 @@ class UserRepository(BaseRepository):
         result = await self._db.execute(
             select(User).options(joinedload(User.clicks))
             .outerjoin(Clicks)
-            .order_by(func.coalesce(Clicks.clicks_count, 0).desc())
+            .order_by(func.coalesce(Clicks.pet_coins, 0).desc())
             .limit(limit)
         )
         return result.scalars().all()

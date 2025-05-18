@@ -20,6 +20,7 @@ class ClickDecrementRequest(ClickBase):
 class ClickResponse(BaseModel):
     telegram_id: int
     clicks_count: int
+    pet_coins: int
     updated_at: int
 
     model_config = ConfigDict(from_attributes=True)

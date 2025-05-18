@@ -12,7 +12,7 @@ class FarmTemplateRepository(BaseRepository):
         return new_template
 
     async def get_all(self) -> list[FarmTemplate]:
-        result = await self._db.execute(select(FarmTemplate))
+        result = await self._db.execute(select(FarmTemplate).order_by(FarmTemplate.base_price))
         return result.scalars().all()
     
     async def get_all_visible(self) -> list[FarmTemplate]:

@@ -8,6 +8,7 @@ class FarmTemplateBase(BaseModel):
     price_multiplier: float = Field(..., gt=1.0)
     base_income: float = Field(..., gt=0)
     income_multiplier: float = Field(..., gt=1.0)
+    clicks_needed: int
 
 class FarmTemplateCreate(FarmTemplateBase):
     is_visible: bool = Field(False, description="Visibility for users")

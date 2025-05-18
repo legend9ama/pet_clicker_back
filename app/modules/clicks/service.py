@@ -9,7 +9,7 @@ class ClickService(BaseService):
         try:
             valid = await self.is_valid(telegram_id, data.amount)
             if valid:
-                clicks = await self.repo.increment_clicks(telegram_id, data.amount)
+                clicks = await self.repo.increment_clicks(telegram_id, data.amount, data.source)
             else:
                 raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"Error incrementing clicks: {"Not Valid"}")
             return ClickResponse.model_validate(clicks)

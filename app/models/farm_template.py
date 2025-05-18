@@ -13,6 +13,7 @@ class FarmTemplate(Base):
     base_income = Column(BigInteger, nullable=False)
     income_multiplier = Column(Float, nullable=False)
     is_visible = Column(Boolean, default=False)
+    clicks_needed = Column(BigInteger, nullable=False)
 
     
     user_farms = relationship("UserFarm", back_populates="farm_template", lazy="raise")

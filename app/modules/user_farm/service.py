@@ -33,7 +33,9 @@ class UserFarmService(BaseService):
         template = await self.farm_template_repo.get_by_id(data.farm_id)
         if not template or not template.is_visible:
             raise HTTPException(status_code=400, detail="Farm not available")
-        if not await self.click_repo.has_enough_clicks(telegram_id, template.base_price):
+        if not await self.click_repo.has_enough_coins(telegram_id, template.base_price):
+            raise HTTPException(status_code=400, detail="Not enough coins")
+        if not await self.click_repo.has_enough_clicks(telegram_id, template.clicks_needed):
             raise HTTPException(status_code=400, detail="Not enough clicks")
         try:
             farm = await self.user_farm_repo.create_farm(telegram_id, data.farm_id)
@@ -48,9 +50,11 @@ class UserFarmService(BaseService):
 
     async def upgrade_farm(self, telegram_id: int, farm_id: int, data: UserFarmUpgrade) -> UserFarmResponse:
         farm = await self.user_farm_repo.get_farm(telegram_id, farm_id)
-        
-        if not await self.click_repo.has_enough_clicks(telegram_id, farm.current_upgrade_cost):
+        farm_template = self.farm_template_repo.get_by_id(farm_id)
+        if not await self.click_repo.has_enough_clicks(telegram_id, farm_template.clicks_needed):
             raise HTTPException(status_code=400, detail="Not enough clicks")
+        if not await self.click_repo.has_enough_coins(telegram_id, farm.current_upgrade_cost):
+            raise HTTPException(status_code=400, detail="Not enough coins")
         try:
             await self.click_repo.decrement_clicks(telegram_id, farm.current_upgrade_cost)
             updated_farm = await self.user_farm_repo.upgrade_farm(telegram_id, farm_id, data.levels)
@@ -63,10 +67,13 @@ class UserFarmService(BaseService):
             raise HTTPException(status_code=400, detail=str(e))
         
     async def collect_farm(self, telegram_id: int, farm_id: int) -> UserFarmCollectionResponse:
+        farm_template = self.farm_template_repo.get_by_id(farm_id)
         farm = await self.user_farm_repo.get_farm(telegram_id, farm_id)
-        collected = int(farm.current_income / 3600 * (time.mktime(datetime.timetuple(datetime.now())) - farm.last_collected))
+        collected = min(int(farm.current_income / 3600 * (time.mktime(datetime.timetuple(datetime.now())) - farm.last_collected)), int(farm.current_income * 24))
+        if not await self.click_repo.has_enough_clicks(telegram_id, farm_template.clicks_needed):
+            raise HTTPException(status_code=400, detail="Not enough clicks")
         try:
-            await self.click_repo.increment_clicks(telegram_id, collected)
+            await self.click_repo.increment_clicks(telegram_id, collected, "farm")
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
         try:

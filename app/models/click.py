@@ -7,6 +7,7 @@ class Clicks(Base):
     
     telegram_id = Column(BigInteger, ForeignKey('users.telegram_id'), primary_key=True)
     clicks_count = Column(BigInteger, default=0)
+    pet_coins = Column(BigInteger, default=0)
     updated_at = Column(UnixTimestamp, server_default=func.extract('epoch', func.now()), onupdate=func.extract('epoch', func.now()))
     
     user = relationship("User", back_populates="clicks")
