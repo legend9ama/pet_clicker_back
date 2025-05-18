@@ -20,7 +20,7 @@ class UserCreate(BaseModel):
 class LeaderboardUser(BaseModel):
     username: str
     photo_url: str | None
-    clicks_count: int
+    pet_coins: int
     position: int
 
     model_config = ConfigDict(from_attributes=True)
