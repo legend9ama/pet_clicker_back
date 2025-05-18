@@ -23,7 +23,7 @@ class FarmTemplateRepository(BaseRepository):
         result = await self._db.execute(
             select(FarmTemplate).where(FarmTemplate.farm_id == farm_id)
         )
-        return result.scalars().all()
+        return result.scalars().first()
 
     async def update(self, farm_id: int, data: dict) -> FarmTemplate | None:
         stmt = (
