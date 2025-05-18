@@ -24,7 +24,8 @@ class UserFarmService(BaseService):
                     **farm.__dict__,
                     "last_collected": settings.unixtimestamp,
                     "name": farm.farm_template.name,
-                    "image_url": farm.farm_template.image_url
+                    "image_url": farm.farm_template.image_url,
+                    "clicks_needed": farm.farm_template.clicks_needed
                 }
             )
         for farm in farms]
